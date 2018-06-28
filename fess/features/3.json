@@ -1,0 +1,12 @@
+{
+    "query": {
+        "function_score": {
+            "field_value_factor": {
+                "field": "favorite_count",
+                "factor": 1.0,
+                "modifier": "log1p",
+                "missing": 0
+            }
+        }
+    }
+}
