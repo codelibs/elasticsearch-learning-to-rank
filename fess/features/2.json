@@ -1,7 +1,7 @@
 {
     "query": {
         "match": {
-            "content": "{{keywords}}"
+            "content": "{{query}}"
         }
     }
 }
