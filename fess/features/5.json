@@ -1,0 +1,14 @@
+{
+  "query": {
+    "function_score": {
+      "gauss": {
+        "last_modified": {
+          "origin": "now/d",
+          "scale": "30d",
+          "offset": "3d",
+          "decay": 0.5
+        }
+      }
+    }
+  }
+}
