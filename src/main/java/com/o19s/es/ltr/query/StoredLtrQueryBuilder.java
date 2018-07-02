@@ -16,6 +16,30 @@
 
 package com.o19s.es.ltr.query;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.lucene.search.Query;
+import org.elasticsearch.Version;
+import org.elasticsearch.common.ParseField;
+import org.elasticsearch.common.ParsingException;
+import org.elasticsearch.common.io.stream.NamedWriteable;
+import org.elasticsearch.common.io.stream.StreamInput;
+import org.elasticsearch.common.io.stream.StreamOutput;
+import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.lucene.search.Queries;
+import org.elasticsearch.common.xcontent.ObjectParser;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentParser;
+import org.elasticsearch.index.query.AbstractQueryBuilder;
+import org.elasticsearch.index.query.QueryShardContext;
+
 import com.o19s.es.ltr.LtrQueryContext;
 import com.o19s.es.ltr.feature.FeatureSet;
 import com.o19s.es.ltr.feature.store.CompiledLtrModel;
@@ -24,25 +48,6 @@ import com.o19s.es.ltr.feature.store.index.IndexFeatureStore;
 import com.o19s.es.ltr.ranker.linear.LinearRanker;
 import com.o19s.es.ltr.utils.AbstractQueryBuilderUtils;
 import com.o19s.es.ltr.utils.FeatureStoreLoader;
-import org.elasticsearch.Version;
-import org.elasticsearch.common.ParseField;
-import org.elasticsearch.common.ParsingException;
-import org.elasticsearch.common.io.stream.NamedWriteable;
-import org.elasticsearch.common.io.stream.StreamInput;
-import org.elasticsearch.common.io.stream.StreamOutput;
-import org.elasticsearch.common.xcontent.ObjectParser;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentParser;
-import org.elasticsearch.index.query.AbstractQueryBuilder;
-import org.elasticsearch.index.query.QueryShardContext;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * sltr query, build a ltr query based on a stored model.
@@ -55,6 +60,8 @@ public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBu
     public static final ParseField PARAMS = new ParseField("params");
     public static final ParseField ACTIVE_FEATURES = new ParseField("active_features");
     private static final ObjectParser<StoredLtrQueryBuilder, Void> PARSER;
+
+    public static final Logger LOGGER = ESLoggerFactory.getLogger(StoredLtrQueryBuilder.class);
 
     static {
         PARSER = new ObjectParser<>(NAME);
@@ -154,25 +161,30 @@ public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBu
     }
 
     @Override
-    protected RankerQuery doToQuery(QueryShardContext context) throws IOException {
-        String indexName = storeName != null ? IndexFeatureStore.indexName(storeName) : IndexFeatureStore.DEFAULT_STORE;
-        FeatureStore store = storeLoader.load(indexName, context.getClient());
-        LtrQueryContext ltrQueryContext = new LtrQueryContext(context,
-                activeFeatures == null ? Collections.emptySet() : new HashSet<>(activeFeatures));
-        if (modelName != null) {
-            CompiledLtrModel model = store.loadModel(modelName);
-            validateActiveFeatures(model.featureSet(), ltrQueryContext);
-            return RankerQuery.build(model, ltrQueryContext, params);
-        } else {
-            assert featureSetName != null;
-            FeatureSet set = store.loadSet(featureSetName);
-            float[] weitghs = new float[set.size()];
-            Arrays.fill(weitghs, 1F);
-            LinearRanker ranker = new LinearRanker(weitghs);
-            CompiledLtrModel model = new CompiledLtrModel("linear", set, ranker);
-            validateActiveFeatures(model.featureSet(), ltrQueryContext);
-            return RankerQuery.build(model, ltrQueryContext, params);
+    protected Query doToQuery(QueryShardContext context) throws IOException {
+        try {
+            String indexName = storeName != null ? IndexFeatureStore.indexName(storeName) : IndexFeatureStore.DEFAULT_STORE;
+            FeatureStore store = storeLoader.load(indexName, context.getClient());
+            LtrQueryContext ltrQueryContext = new LtrQueryContext(context,
+                    activeFeatures == null ? Collections.emptySet() : new HashSet<>(activeFeatures));
+            if (modelName != null) {
+                CompiledLtrModel model = store.loadModel(modelName);
+                validateActiveFeatures(model.featureSet(), ltrQueryContext);
+                return RankerQuery.build(model, ltrQueryContext, params);
+            } else {
+                assert featureSetName != null;
+                FeatureSet set = store.loadSet(featureSetName);
+                float[] weitghs = new float[set.size()];
+                Arrays.fill(weitghs, 1F);
+                LinearRanker ranker = new LinearRanker(weitghs);
+                CompiledLtrModel model = new CompiledLtrModel("linear", set, ranker);
+                validateActiveFeatures(model.featureSet(), ltrQueryContext);
+                return RankerQuery.build(model, ltrQueryContext, params);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Ignore RankerQuery.", e);
         }
+        return Queries.newMatchAllQuery();
     }
 
     @Override
