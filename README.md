@@ -1,8 +1,25 @@
-[![CircleCI](https://circleci.com/gh/o19s/elasticsearch-learning-to-rank.svg?style=svg)](https://circleci.com/gh/o19s/elasticsearch-learning-to-rank)
+Elasticsearch Learning To Rank
+========================
+
+## Overview
 
 The Elasticsearch Learning to Rank plugin uses machine learning to improve search relevance ranking. It's powering search at places like Wikimedia Foundation and Snagajob!
+This project forked from [o19s](https://github.com/o19s/elasticsearch-learning-to-rank).
 
-# What this plugin does...
+## Version
+
+[Versions in Maven Repository](http://central.maven.org/maven2/org/codelibs/elasticsearch-learning-to-rank/)
+
+### Issues/Questions
+
+Please file an [issue](https://github.com/codelibs/elasticsearch-learning-to-rank/issues "issue").
+
+## Installation
+
+    $ $ES_HOME/bin/elasticsearch-plugin install org.codelibs:elasticsearch-learning-to-rank:6.3.0
+
+
+## What this plugin does...
 
 This plugin:
 
@@ -19,37 +36,23 @@ We recommend taking time to [read the docs](http://elasticsearch-learning-to-ran
 
 If you want to just jump in, go straight to the demo. The demo uses [Ranklib](https://sourceforge.net/p/lemur/wiki/RankLib/), a relatively straightforward Java Learning to Rank library, to train models. Follow the directions in the [demo README](demo/README.md), edit code, and have fun!
 
-# Installing
-
-See the full list of [prebuilt versions](http://es-learn-to-rank.labs.o19s.com). If you don't see a version available, see the link below for building or file a request via [issues](https://github.com/o19s/elasticsearch-learning-to-rank/issues).
-
-To install, you'd run a command such as:
-
-`./bin/elasticsearch-plugin install http://es-learn-to-rank.labs.o19s.com/ltr-1.0.0-es6.1.2.zip`
-
-(It's expected you'll confirm some security exceptions, you can pass `-b` to `elasticsearch-plugin` to automatically install)
-
-If you already are running Elasticsearch, don't forget to restart!
-
 ## Know issues
 As any other piece of software, this plugin is not exempt from issues. Please read the [known issues](KNOWN_ISSUES.md) to learn about the current issues that we are aware of. This file might include workarounds to mitigate them when possible.
 
-# Development
+## Development
 
 Notes if you want to dig into the code or build for a version there's no build for.
 
-### 1. Build with Gradle Wrapper
+### 1. Build with Maven
 
 ```
-./gradlew clean check
+mvn package
 ```
-
-This runs the tasks in the `esplugin` gradle plugin that builds, tests, generates a Elasticsearch plugin zip file.
 
 ### 2. Install with `./bin/elasticsearch-plugin`
 
 ```
-./bin/elasticsearch-plugin install file:///path/to/project/build/distributions/ltr-<LTR-VER>-es<ES-VER>.zip
+./bin/elasticsearch-plugin install file:///path/to/project/target/releases/elasticsearch-learning-to-rank-<VER>.zip
 ```
 
 # Who built this?
