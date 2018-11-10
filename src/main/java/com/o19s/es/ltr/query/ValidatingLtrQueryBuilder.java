@@ -43,7 +43,6 @@ import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.index.query.QueryShardException;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -61,7 +60,7 @@ public class ValidatingLtrQueryBuilder extends AbstractQueryBuilder<ValidatingLt
 
     public static final String NAME = "validating_ltr_query";
     private static final ParseField VALIDATION = new ParseField("validation");
-    private static ObjectParser<ValidatingLtrQueryBuilder, Void> PARSER = new ObjectParser<>(NAME);
+    private static final ObjectParser<ValidatingLtrQueryBuilder, Void> PARSER = new ObjectParser<>(NAME);
 
     static {
         BiConsumer<ValidatingLtrQueryBuilder, StorableElement> setElem = (b, v) -> {

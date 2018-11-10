@@ -180,6 +180,8 @@ public class StoredFeature implements Feature, Accountable, StorableElement {
                 return PrecompiledTemplateFeature.compile(this);
             case PrecompiledExpressionFeature.TEMPLATE_LANGUAGE:
                 return PrecompiledExpressionFeature.compile(this);
+            case ScriptFeature.TEMPLATE_LANGUAGE:
+                return ScriptFeature.compile(this);
             default:
                 return this;
         }
@@ -197,7 +199,7 @@ public class StoredFeature implements Feature, Accountable, StorableElement {
     @Override
     public Query doToQuery(LtrQueryContext context, FeatureSet set, Map<String, Object> params) {
         List<String> missingParams = queryParams.stream()
-                .filter((x) -> params == null || !params.containsKey(x))
+                .filter((x) -> !params.containsKey(x))
                 .collect(Collectors.toList());
 
         if (!missingParams.isEmpty()) {
