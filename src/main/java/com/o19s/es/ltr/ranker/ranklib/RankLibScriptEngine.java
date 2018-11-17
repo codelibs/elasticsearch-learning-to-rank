@@ -20,7 +20,6 @@ import com.o19s.es.ltr.ranker.LtrRanker;
 import com.o19s.es.ltr.ranker.parser.LtrRankerParserFactory;
 import org.elasticsearch.common.component.AbstractComponent;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.script.ExecutableScript;
 import org.elasticsearch.script.ScriptContext;
 import org.elasticsearch.script.ScriptEngine;
 
@@ -58,7 +57,7 @@ public class RankLibScriptEngine extends AbstractComponent implements ScriptEngi
     @Override
     public <T> T compile(String scriptName, String scriptSource, ScriptContext<T> context, Map<String, String> params) {
 
-        ExecutableScript.Factory retFactory = params1 -> {
+        RankLibExecutableScript.Factory retFactory = params1 -> {
             LtrRanker ltrRanker = factory.getParser(RanklibModelParser.TYPE).parse(null, scriptSource);
             return new RankLibExecutableScript(ltrRanker);
         };
@@ -71,7 +70,7 @@ public class RankLibScriptEngine extends AbstractComponent implements ScriptEngi
 
     }
 
-    public class RankLibExecutableScript implements ExecutableScript {
+    public static class RankLibExecutableScript {
 
         LtrRanker _ranker;
 
@@ -79,15 +78,17 @@ public class RankLibScriptEngine extends AbstractComponent implements ScriptEngi
             _ranker = ranker;
         }
 
-        @Override
         public void setNextVar(String name, Object value) {
             _ranker = (LtrRanker) (value);
 
         }
 
-        @Override
         public Object run() {
             return _ranker;
+        }
+
+        public interface Factory {
+            RankLibExecutableScript newInstance(Map<String, Object> params);
         }
     }
 }
