@@ -32,7 +32,7 @@ import org.elasticsearch.common.ParsingException;
 import org.elasticsearch.common.io.stream.NamedWriteable;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
-import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.lucene.search.Queries;
 import org.elasticsearch.common.xcontent.ObjectParser;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -61,7 +61,7 @@ public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBu
     public static final ParseField ACTIVE_FEATURES = new ParseField("active_features");
     private static final ObjectParser<StoredLtrQueryBuilder, Void> PARSER;
 
-    public static final Logger LOGGER = ESLoggerFactory.getLogger(StoredLtrQueryBuilder.class);
+    public static final Logger LOGGER = Loggers.getLogger(StoredLtrQueryBuilder.class);
 
     static {
         PARSER = new ObjectParser<>(NAME);

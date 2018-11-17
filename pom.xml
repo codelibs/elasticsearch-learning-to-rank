@@ -59,6 +59,7 @@
 						<exclude>**/StoredLtrQueryBuilderTests.java</exclude>
 						<exclude>**/ValidatingLtrQueryBuilderTests.java</exclude>
 					</excludes>
+					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
 			<plugin>
