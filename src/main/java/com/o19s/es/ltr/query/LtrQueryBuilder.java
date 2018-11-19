@@ -21,7 +21,7 @@ import com.o19s.es.ltr.feature.PrebuiltFeature;
 import com.o19s.es.ltr.feature.PrebuiltFeatureSet;
 import com.o19s.es.ltr.feature.PrebuiltLtrModel;
 import com.o19s.es.ltr.ranker.LtrRanker;
-import com.o19s.es.ltr.ranker.ranklib.RankLibScriptEngine.RankLibExecutableScript;
+import com.o19s.es.ltr.ranker.ranklib.RankLibScriptEngine;
 import com.o19s.es.ltr.utils.AbstractQueryBuilderUtils;
 import org.apache.lucene.search.Query;
 import org.elasticsearch.common.ParseField;
@@ -130,9 +130,9 @@ public class LtrQueryBuilder extends AbstractQueryBuilder<LtrQueryBuilder> {
         }
         features = Collections.unmodifiableList(features);
 
-        RankLibExecutableScript.Factory factory = context.getScriptService().compile(_rankLibScript, new ScriptContext<>(
-                "executable", RankLibExecutableScript.Factory.class));
-        RankLibExecutableScript executableScript = factory.newInstance(null);
+        RankLibScriptEngine.RankLibModelContainer.Factory factory = context.getScriptService().compile(_rankLibScript, new ScriptContext<>(
+                "ranklib", RankLibScriptEngine.RankLibModelContainer.Factory.class));
+        RankLibScriptEngine.RankLibModelContainer executableScript = factory.newInstance();
         LtrRanker ranker = (LtrRanker) executableScript.run();
 
         PrebuiltFeatureSet featureSet = new PrebuiltFeatureSet(queryName(), features);
