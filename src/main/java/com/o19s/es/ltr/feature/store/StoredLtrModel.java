@@ -41,9 +41,9 @@ public class StoredLtrModel implements StorableElement {
     public static final String TYPE = "model";
 
     private static final ObjectParser<ParsingState, Void> PARSER;
-    private static final ParseField NAME = new ParseField("name");
-    private static final ParseField FEATURE_SET = new ParseField("feature_set");
-    private static final ParseField MODEL = new ParseField("model");
+    private static final ParseField NAME_FIELD = new ParseField("name");
+    private static final ParseField FEATURE_SET_FIELD = new ParseField("feature_set");
+    private static final ParseField MODEL_FIELD = new ParseField("model");
 
     private final String name;
     private final StoredFeatureSet featureSet;
@@ -53,12 +53,12 @@ public class StoredLtrModel implements StorableElement {
 
     static {
         PARSER = new ObjectParser<>(TYPE, ParsingState::new);
-        PARSER.declareString(ParsingState::setName, NAME);
+        PARSER.declareString(ParsingState::setName, NAME_FIELD);
         PARSER.declareObject(ParsingState::setFeatureSet,
                 (parser, ctx) -> StoredFeatureSet.parse(parser),
-                FEATURE_SET);
+                FEATURE_SET_FIELD);
         PARSER.declareObject(ParsingState::setRankingModel, LtrModelDefinition.PARSER,
-                MODEL);
+                MODEL_FIELD);
     }
 
     public StoredLtrModel(String name, StoredFeatureSet featureSet, LtrModelDefinition definition) {
@@ -156,10 +156,10 @@ public class StoredLtrModel implements StorableElement {
     @Override
     public XContentBuilder toXContent(XContentBuilder builder, Params params) throws IOException {
         builder.startObject();
-        builder.field(NAME.getPreferredName(), name);
-        builder.field(FEATURE_SET.getPreferredName());
+        builder.field(NAME_FIELD.getPreferredName(), name);
+        builder.field(FEATURE_SET_FIELD.getPreferredName());
         featureSet.toXContent(builder, params);
-        builder.startObject(MODEL.getPreferredName());
+        builder.startObject(MODEL_FIELD.getPreferredName());
         builder.field(LtrModelDefinition.MODEL_TYPE.getPreferredName(), rankingModelType);
         builder.field(LtrModelDefinition.MODEL_DEFINITION.getPreferredName());
         if (modelAsString) {
