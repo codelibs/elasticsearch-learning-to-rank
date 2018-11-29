@@ -76,7 +76,7 @@ public class StoredLtrQueryBuilderTests extends AbstractQueryTestCase<StoredLtrQ
      */
     @Override
     protected Set<String> getObjectsHoldingArbitraryContent() {
-        return Collections.singletonMap(StoredLtrQueryBuilder.PARAMS.getPreferredName(), null).keySet();
+        return Collections.singletonMap(StoredLtrQueryBuilder.PARAMS_FIELD.getPreferredName(), null).keySet();
     }
 
     @Before
