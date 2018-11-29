@@ -54,22 +54,22 @@ import com.o19s.es.ltr.utils.FeatureStoreLoader;
  */
 public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBuilder> implements NamedWriteable {
     public static final String NAME = "sltr";
-    public static final ParseField MODEL_NAME = new ParseField("model");
-    public static final ParseField FEATURESET_NAME = new ParseField("featureset");
-    public static final ParseField STORE_NAME = new ParseField("store");
-    public static final ParseField PARAMS = new ParseField("params");
-    public static final ParseField ACTIVE_FEATURES = new ParseField("active_features");
+    public static final ParseField MODEL_NAME_FIELD = new ParseField("model");
+    public static final ParseField FEATURESET_NAME_FIELD = new ParseField("featureset");
+    public static final ParseField STORE_NAME_FIELD = new ParseField("store");
+    public static final ParseField PARAMS_FIELD = new ParseField("params");
+    public static final ParseField ACTIVE_FEATURES_FIELD = new ParseField("active_features");
     private static final ObjectParser<StoredLtrQueryBuilder, Void> PARSER;
 
     public static final Logger LOGGER = Loggers.getLogger(StoredLtrQueryBuilder.class);
 
     static {
         PARSER = new ObjectParser<>(NAME);
-        PARSER.declareString(StoredLtrQueryBuilder::modelName, MODEL_NAME);
-        PARSER.declareString(StoredLtrQueryBuilder::featureSetName, FEATURESET_NAME);
-        PARSER.declareString(StoredLtrQueryBuilder::storeName, STORE_NAME);
-        PARSER.declareField(StoredLtrQueryBuilder::params, XContentParser::map, PARAMS, ObjectParser.ValueType.OBJECT);
-        PARSER.declareStringArray(StoredLtrQueryBuilder::activeFeatures, ACTIVE_FEATURES);
+        PARSER.declareString(StoredLtrQueryBuilder::modelName, MODEL_NAME_FIELD);
+        PARSER.declareString(StoredLtrQueryBuilder::featureSetName, FEATURESET_NAME_FIELD);
+        PARSER.declareString(StoredLtrQueryBuilder::storeName, STORE_NAME_FIELD);
+        PARSER.declareField(StoredLtrQueryBuilder::params, XContentParser::map, PARAMS_FIELD, ObjectParser.ValueType.OBJECT);
+        PARSER.declareStringArray(StoredLtrQueryBuilder::activeFeatures, ACTIVE_FEATURES_FIELD);
         AbstractQueryBuilderUtils.declareStandardFields(PARSER);
     }
 
@@ -111,10 +111,10 @@ public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBu
             throw new ParsingException(parser.getTokenLocation(), iae.getMessage(), iae);
         }
         if (builder.modelName() == null && builder.featureSetName() == null) {
-            throw new ParsingException(parser.getTokenLocation(), "Either [" + MODEL_NAME + "] or [" + FEATURESET_NAME + "] must be set.");
+            throw new ParsingException(parser.getTokenLocation(), "Either [" + MODEL_NAME_FIELD + "] or [" + FEATURESET_NAME_FIELD + "] must be set.");
         }
         if (builder.params() == null) {
-            throw new ParsingException(parser.getTokenLocation(), "Field [" + PARAMS + "] is mandatory.");
+            throw new ParsingException(parser.getTokenLocation(), "Field [" + PARAMS_FIELD + "] is mandatory.");
         }
         return builder;
     }
@@ -134,19 +134,19 @@ public class StoredLtrQueryBuilder extends AbstractQueryBuilder<StoredLtrQueryBu
     protected void doXContent(XContentBuilder builder, Params p) throws IOException {
         builder.startObject(NAME);
         if (modelName != null) {
-            builder.field(MODEL_NAME.getPreferredName(), modelName);
+            builder.field(MODEL_NAME_FIELD.getPreferredName(), modelName);
         }
         if (featureSetName != null) {
-            builder.field(FEATURESET_NAME.getPreferredName(), featureSetName);
+            builder.field(FEATURESET_NAME_FIELD.getPreferredName(), featureSetName);
         }
         if (storeName != null) {
-            builder.field(STORE_NAME.getPreferredName(), storeName);
+            builder.field(STORE_NAME_FIELD.getPreferredName(), storeName);
         }
         if (this.params != null && !this.params.isEmpty()) {
-            builder.field(PARAMS.getPreferredName(), this.params);
+            builder.field(PARAMS_FIELD.getPreferredName(), this.params);
         }
         if (this.activeFeatures != null && !this.activeFeatures.isEmpty()) {
-            builder.field(ACTIVE_FEATURES.getPreferredName(), this.activeFeatures);
+            builder.field(ACTIVE_FEATURES_FIELD.getPreferredName(), this.activeFeatures);
         }
         printBoostAndQueryName(builder);
         builder.endObject();

@@ -59,7 +59,7 @@ public class ValidatingLtrQueryBuilder extends AbstractQueryBuilder<ValidatingLt
             StoredLtrModel.TYPE)));
 
     public static final String NAME = "validating_ltr_query";
-    private static final ParseField VALIDATION = new ParseField("validation");
+    private static final ParseField VALIDATION_FIELD = new ParseField("validation");
     private static final ObjectParser<ValidatingLtrQueryBuilder, Void> PARSER = new ObjectParser<>(NAME);
 
     static {
@@ -133,7 +133,7 @@ public class ValidatingLtrQueryBuilder extends AbstractQueryBuilder<ValidatingLt
                         "] is mandatory.");
             }
             if (builder.validation == null) {
-                throw new ParsingException(parser.getTokenLocation(), "Expected field [" + VALIDATION.getPreferredName() + "]");
+                throw new ParsingException(parser.getTokenLocation(), "Expected field [" + VALIDATION_FIELD.getPreferredName() + "]");
             }
 
             return builder;
@@ -153,7 +153,7 @@ public class ValidatingLtrQueryBuilder extends AbstractQueryBuilder<ValidatingLt
     protected void doXContent(XContentBuilder builder, Params params) throws IOException {
         builder.startObject(NAME);
         builder.field(element.type(), element);
-        builder.field(VALIDATION.getPreferredName(), validation);
+        builder.field(VALIDATION_FIELD.getPreferredName(), validation);
         printBoostAndQueryName(builder);
         builder.endObject();
     }
