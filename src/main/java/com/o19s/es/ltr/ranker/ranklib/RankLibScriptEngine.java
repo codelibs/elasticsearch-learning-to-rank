@@ -16,16 +16,16 @@
  */
 package com.o19s.es.ltr.ranker.ranklib;
 
-import com.o19s.es.ltr.ranker.LtrRanker;
-import com.o19s.es.ltr.ranker.parser.LtrRankerParserFactory;
-import org.elasticsearch.common.component.AbstractComponent;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.script.ScriptContext;
 import org.elasticsearch.script.ScriptEngine;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
+import com.o19s.es.ltr.ranker.LtrRanker;
+import com.o19s.es.ltr.ranker.parser.LtrRankerParserFactory;
 
 /**
  * Created by doug on 12/30/16.
@@ -37,7 +37,7 @@ import java.util.Objects;
  * So this code acts as a hook for deserializing Ranklib models from ranklib XML
  * and as a convenient means for caching those deserialized model
  */
-public class RankLibScriptEngine extends AbstractComponent implements ScriptEngine {
+public class RankLibScriptEngine implements ScriptEngine {
 
     public static final String NAME = "ranklib";
     public static final String EXTENSION = "ranklib";
@@ -46,7 +46,6 @@ public class RankLibScriptEngine extends AbstractComponent implements ScriptEngi
     private final LtrRankerParserFactory factory;
 
     public RankLibScriptEngine(Settings settings, LtrRankerParserFactory factory) {
-        super(settings);
         this.factory = Objects.requireNonNull(factory);
     }
 
