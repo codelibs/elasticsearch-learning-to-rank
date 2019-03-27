@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.script.ScriptContext;
 import org.elasticsearch.script.ScriptEngine;
 
@@ -45,7 +44,7 @@ public class RankLibScriptEngine implements ScriptEngine {
             new ScriptContext<>("ranklib", RankLibModelContainer.Factory.class);
     private final LtrRankerParserFactory factory;
 
-    public RankLibScriptEngine(Settings settings, LtrRankerParserFactory factory) {
+    public RankLibScriptEngine(LtrRankerParserFactory factory) {
         this.factory = Objects.requireNonNull(factory);
     }
 

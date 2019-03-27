@@ -109,6 +109,16 @@ public class ValidatingLtrQueryBuilderTests extends AbstractQueryTestCase<Valida
     }
 
     @Override
+    protected boolean supportsBoost() {
+        return false;
+    }
+
+    @Override
+    protected boolean supportsQueryName() {
+        return false;
+    }
+
+    @Override
     protected void doAssertLuceneQuery(ValidatingLtrQueryBuilder queryBuilder, Query query, SearchContext context) throws IOException {
         if (StoredFeature.TYPE.equals(queryBuilder.getElement().type())) {
             assertThat(query, instanceOf(MatchNoDocsQuery.class));
